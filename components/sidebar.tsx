@@ -1,7 +1,16 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { LayoutDashboard } from "lucide-react";
+import {
+  Code,
+  ImageIcon,
+  LayoutDashboard,
+  MessagesSquare,
+  Music,
+  MusicIcon,
+  Settings,
+  VideoIcon,
+} from "lucide-react";
 import { Montserrat } from "next/font/google";
 import Image from "next/image";
 import Link from "next/link";
@@ -14,6 +23,42 @@ const routes = [
     icon: LayoutDashboard,
     href: "/dashboard",
     color: "text-sky-500",
+  },
+  {
+    label: "Conversation",
+    icon: MessagesSquare,
+    href: "/dashboard",
+    color: "text-violet-500",
+  },
+  {
+    label: "Image Generator",
+    icon: ImageIcon,
+    href: "/dashboard",
+    color: "text-pink-500",
+  },
+  {
+    label: "Video Generator",
+    icon: VideoIcon,
+    href: "/dashboard",
+    color: "text-orange-500",
+  },
+  {
+    label: "Music Generator",
+    icon: Music,
+    href: "/dashboard",
+    color: "text-emerald-500",
+  },
+  {
+    label: "Code Generator",
+    icon: Code,
+    href: "/dashboard",
+    color: "text-yellow-500",
+  },
+  {
+    label: "Settings",
+    icon: Settings,
+    href: "/dashboard",
+    color: "text-green-500",
   },
 ];
 
