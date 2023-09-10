@@ -7,6 +7,7 @@ import Sidebar from "./sidebar";
 import { useEffect, useState } from "react";
 
 const MobileSidebar = () => {
+  // 遅延レンダリングを行い、Hydration errorを回避する
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
