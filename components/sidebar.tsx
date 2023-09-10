@@ -7,7 +7,6 @@ import {
   LayoutDashboard,
   MessagesSquare,
   Music,
-  MusicIcon,
   Settings,
   VideoIcon,
 } from "lucide-react";
