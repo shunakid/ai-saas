@@ -5,6 +5,8 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+// 同じ役割を持ったクラス名が重複して表示がバグる不具合を回避する関数
+
 // 使用例:
 
 // 1. 基本的な使用法:
