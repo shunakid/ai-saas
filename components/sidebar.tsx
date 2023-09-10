@@ -25,7 +25,7 @@ const Sidebar = () => {
           <div className=" relative w-8 h-8 mr-4">
             <Image fill alt="Logo" src="/logo.png" />
           </div>
-          <h1 className={cn("text-2xl font-bold, montserrat.className")}>
+          <h1 className={cn("text-2xl font-bold", montserrat.className)}>
             Genius
           </h1>
         </Link>
