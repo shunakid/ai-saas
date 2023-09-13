@@ -63,7 +63,6 @@ const routes = [
     label: "Settings",
     icon: Settings,
     href: "/setting",
-    color: "text-green-500",
   },
 ];
 
@@ -72,10 +71,10 @@ const Sidebar = () => {
   const pathname = usePathname();
 
   return (
-    <div className="space-y-4 py-4 flex flex-col h-full bg-[#111827] text-white">
-      <div className="px-3 py-2 flex-1">
-        <Link href="/dashboard" className="flex items-center pl-3 mb-14">
-          <div className=" relative w-8 h-8 mr-4">
+    <div className="flex h-full flex-col space-y-4 bg-[#111827] py-4 text-white">
+      <div className="flex-1 px-3 py-2">
+        <Link href="/dashboard" className="mb-14 flex items-center pl-3">
+          <div className=" relative mr-4 h-8 w-8">
             <Image fill alt="Logo" src="/logo.png" />
           </div>
           <h1 className={cn("text-2xl font-bold", montserrat.className)}>
@@ -89,16 +88,16 @@ const Sidebar = () => {
               key={route.href}
               className={cn(
                 // 基本のスタイルを設定
-                "text-sm group flex p-3 w-full justify-start font-medium cursor-pointer hover:text-white hover:bg-white/10 rounded-lg transition",
+                "group flex w-full cursor-pointer justify-start rounded-lg p-3 text-sm font-medium transition hover:bg-white/10 hover:text-white",
 
                 // 現在のページのパスに基づいて、リンクの背景色とテキスト色を動的に変更
                 pathname === route.href
                   ? "bg-white/10 text-white" // 現在のページの場合のスタイル
-                  : "text-zinc-400" // それ以外のページの場合のスタイル
+                  : "text-zinc-400", // それ以外のページの場合のスタイル
               )}
             >
-              <div className="flex items-center flex-1">
-                <route.icon className={cn("h-5 w-5 mr-3", route.color)} />
+              <div className="flex flex-1 items-center">
+                <route.icon className={cn("mr-3 h-5 w-5", route.color)} />
                 {route.label}
               </div>
             </Link>
