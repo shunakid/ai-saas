@@ -13,9 +13,15 @@ import {
 import { Montserrat } from "next/font/google";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
-const montserrat = Montserrat({ weight: "600", subsets: ["latin"] });
+// Montserratフォントの設定
+const montserrat = Montserrat({
+  weight: "600",
+  subsets: ["latin"],
+});
 
+// サイドバーに表示されるナビゲーションリンクの情報を持つ配列
 const routes = [
   {
     label: "Dashboard",
@@ -26,42 +32,45 @@ const routes = [
   {
     label: "Conversation",
     icon: MessagesSquare,
-    href: "/dashboard",
+    href: "/conversation",
     color: "text-violet-500",
   },
   {
     label: "Image Generator",
     icon: ImageIcon,
-    href: "/dashboard",
+    href: "/image",
     color: "text-pink-500",
   },
   {
     label: "Video Generator",
     icon: VideoIcon,
-    href: "/dashboard",
+    href: "/video",
     color: "text-orange-500",
   },
   {
     label: "Music Generator",
     icon: Music,
-    href: "/dashboard",
+    href: "/music",
     color: "text-emerald-500",
   },
   {
     label: "Code Generator",
     icon: Code,
-    href: "/dashboard",
+    href: "/code",
     color: "text-yellow-500",
   },
   {
     label: "Settings",
     icon: Settings,
-    href: "/dashboard",
+    href: "/setting",
     color: "text-green-500",
   },
 ];
 
 const Sidebar = () => {
+  // 現在のページのパスを取得
+  const pathname = usePathname();
+
   return (
     <div className="space-y-4 py-4 flex flex-col h-full bg-[#111827] text-white">
       <div className="px-3 py-2 flex-1">
@@ -79,7 +88,13 @@ const Sidebar = () => {
               href={route.href}
               key={route.href}
               className={cn(
-                "text-sm group flex p-3 w-full justify-start font-medium cursor-pointer hover:text-white hover:bg-white/10 rounded-lg transition"
+                // 基本のスタイルを設定
+                "text-sm group flex p-3 w-full justify-start font-medium cursor-pointer hover:text-white hover:bg-white/10 rounded-lg transition",
+
+                // 現在のページのパスに基づいて、リンクの背景色とテキスト色を動的に変更
+                pathname === route.href
+                  ? "bg-white/10 text-white" // 現在のページの場合のスタイル
+                  : "text-zinc-400" // それ以外のページの場合のスタイル
               )}
             >
               <div className="flex items-center flex-1">
