@@ -14,7 +14,7 @@ import { useRouter } from "next/navigation";
 
 const tools = [
   {
-    label: "Convesation",
+    label: "Conversation",
     icon: MessageSquare,
     color: "text-violet-500",
     bgColor: "bg-violet-500/10",
