@@ -8,6 +8,7 @@ const openAIConfiguration = new Configuration({
 
 const openAIApiInstance = new OpenAIApi(openAIConfiguration);
 
+// ユーザーからの会話リクエストを処理する
 export async function POST(req: Request) {
   try {
     const { userId } = authenticateUser();
