@@ -23,7 +23,9 @@ import { formSchema } from "./constants";
 
 const ConversationPage = () => {
   const router = useRouter();
-  const [messages, setMessages] = useState<ChatCompletionRequestMessage[]>([]);
+  const [chatHistory, setChatHistory] = useState<
+    ChatCompletionRequestMessage[]
+  >([]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -34,22 +36,27 @@ const ConversationPage = () => {
 
   const isLoading = form.formState.isSubmitting;
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  const onSubmit = async (userInput: z.infer<typeof formSchema>) => {
     try {
       const userMessage: ChatCompletionRequestMessage = {
         role: "user",
-        content: values.prompt,
+        content: userInput.prompt,
       };
-      const newMessages = [...messages, userMessage];
+      const newMessages = [...chatHistory, userMessage];
 
-      const response = await axios.post("/api/conversation", {
+      const conversationResponse = await axios.post("/api/conversation", {
         messages: newMessages,
       });
-      setMessages((current) => [...current, userMessage, response.data]);
+      const chatGPTResponse = conversationResponse.data;
+      setChatHistory((chatHistory) => [
+        ...chatHistory,
+        userMessage,
+        chatGPTResponse,
+      ]);
 
       form.reset();
     } catch (error: any) {
-      console.log(error);
+      // ...
     } finally {
       router.refresh();
     }
@@ -114,22 +121,22 @@ const ConversationPage = () => {
               <Loader />
             </div>
           )}
-          {messages.length === 0 && !isLoading && (
+          {chatHistory.length === 0 && !isLoading && (
             <Empty label="No conversation started." />
           )}
           <div className="flex flex-col-reverse gap-y-4">
-            {messages.map((message) => (
+            {chatHistory.map((chatMessage) => (
               <div
-                key={message.content}
+                key={chatMessage.content}
                 className={cn(
                   "flex w-full items-start gap-x-8 rounded-lg p-8",
-                  message.role === "user"
+                  chatMessage.role === "user"
                     ? "border border-black/10 bg-white"
                     : "bg-muted",
                 )}
               >
-                {message.role === "user" ? <UserAvatar /> : <BotAvatar />}
-                <p className="text-sm">{message.content}</p>
+                {chatMessage.role === "user" ? <UserAvatar /> : <BotAvatar />}
+                <p className="text-sm">{chatMessage.content}</p>
               </div>
             ))}
           </div>
