@@ -1,12 +1,9 @@
-import { auth } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
-import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from "openai";
+import { ChatCompletionRequestMessage } from "openai";
 
-const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
-const openai = new OpenAIApi(configuration);
+import { openAIApiInstance } from "../utils/openAIConfig";
+import { handleRequest } from "../utils/requestHandler";
+import { handleErrors } from "../utils/errorHandling";
 
 const instructionMessage: ChatCompletionRequestMessage = {
   role: "system",
@@ -14,32 +11,20 @@ const instructionMessage: ChatCompletionRequestMessage = {
     "You are a code generator. You must answer only in markdown code snippets. Use code comments for explanations.",
 };
 
-export async function POST(req: Request) {
+export async function POST(req: Request): Promise<NextResponse> {
   try {
-    const { userId } = auth();
-    const body = await req.json();
-    const { messages } = body;
+    const { userId, body } = await handleRequest(req);
+    const { messages: userMessages } = body;
 
-    if (!userId) {
-      return new NextResponse("Unauthorized", { status: 401 });
-    }
+    const errorResponse = handleErrors({ userId, userMessages });
+    if (errorResponse) return errorResponse;
 
-    if (!configuration.apiKey) {
-      return new NextResponse("OpenAI API Key not configured.", {
-        status: 500,
-      });
-    }
-
-    if (!messages) {
-      return new NextResponse("Messages are required", { status: 400 });
-    }
-
-    const response = await openai.createChatCompletion({
+    const openAIResponse = await openAIApiInstance.createChatCompletion({
       model: "gpt-3.5-turbo",
-      messages: [instructionMessage, ...messages],
+      messages: [instructionMessage, ...userMessages],
     });
 
-    return NextResponse.json(response.data.choices[0].message);
+    return NextResponse.json(openAIResponse.data.choices[0].message);
   } catch (error) {
     console.log("[CODE_ERROR]", error);
     return new NextResponse("Internal Error", { status: 500 });

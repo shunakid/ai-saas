@@ -1,33 +1,16 @@
-import { auth as authenticateUser } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
-import { Configuration, OpenAIApi } from "openai";
 
-const openAIConfiguration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+import { openAIApiInstance } from "../utils/openAIConfig";
+import { handleRequest } from "../utils/requestHandler";
+import { handleErrors } from "../utils/errorHandling";
 
-const openAIApiInstance = new OpenAIApi(openAIConfiguration);
-
-// ユーザーからの会話リクエストを処理する
-export async function POST(req: Request) {
+export async function POST(req: Request): Promise<NextResponse> {
   try {
-    const { userId } = authenticateUser();
-    const requestBody = await req.json();
-    const { messages: userMessages } = requestBody;
+    const { userId, body } = await handleRequest(req);
+    const { messages: userMessages } = body;
 
-    if (!userId) {
-      return new NextResponse("Unauthorized", { status: 401 });
-    }
-
-    if (!openAIConfiguration.apiKey) {
-      return new NextResponse("OpenAI API Key not configured.", {
-        status: 500,
-      });
-    }
-
-    if (!userMessages) {
-      return new NextResponse("Messages are required", { status: 400 });
-    }
+    const errorResponse = handleErrors({ userId, userMessages });
+    if (errorResponse) return errorResponse;
 
     const openAIResponse = await openAIApiInstance.createChatCompletion({
       model: "gpt-3.5-turbo",
