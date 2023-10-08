@@ -5,7 +5,6 @@ import { Configuration, OpenAIApi } from "openai";
  * 環境変数から OPENAI_API_KEY を取得し、
  * apiKey プロパティとして設定します。
  *
- * @typedef {Object} openAIConfiguration
  * @property {string} apiKey - OpenAI APIのAPIキー。
  */
 const openAIConfiguration = new Configuration({
@@ -14,9 +13,7 @@ const openAIConfiguration = new Configuration({
 
 /**
  * OpenAIApi インスタンスを作成します。
- * 上で作成した openAIConfiguration オブジェクトを使用します。
  *
- * @typedef {Object} openAIApiInstance
  * @example
  * import { openAIApiInstance } from 'このモジュールのパス';
  * const response = await openAIApiInstance.createCompletion({ ... });
