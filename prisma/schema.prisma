@@ -1,9 +1,24 @@
+// データソースの設定
+// 使用するデータベースはMySQLで、環境変数から接続URLを取得
+// 関連性のモードはPrismaを使用
 datasource db {
-  provider     = "mysql"
-  url          = env("DATABASE_URL")
-  relationMode = "prisma"
+  provider     = "mysql"       // 使用するデータベースのプロバイダ
+  url          = env("DATABASE_URL")  // データベースの接続URL
+  relationMode = "prisma"     // 関連性のモード
 }
 
+// クライアントジェネレータの設定
+// PrismaのJavaScriptクライアントを使用
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client-js"  // 使用するクライアントのプロバイダ
+}
+
+// UserApiLimitモデル
+// ユーザーごとのAPI制限を管理するモデル
+model UserApiLimit {
+  id        String      @id @default(cuid())       // 一意のID
+  userId    String   @unique                      // ユーザーID (一意)
+  count     Int      @default(0)                  // API呼び出し回数
+  createdAt DateTime @default(now())              // 作成日時
+  updatedAt DateTime @updatedAt                   // 更新日時
 }
