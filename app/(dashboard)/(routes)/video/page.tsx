@@ -17,6 +17,11 @@ import { Empty } from "@/components/empty";
 
 import { formSchema } from "./constants";
 
+/**
+ * ビデオ生成ページのコンポーネント。
+ * ユーザーのプロンプトを元に、生成した動画を取得します。
+ * @returns {JSX.Element} ビデオ生成ページのコンポーネント
+ */
 const VideoPage = () => {
   const router = useRouter();
   const [video, setVideo] = useState<string>();
@@ -30,13 +35,19 @@ const VideoPage = () => {
 
   const isLoading = form.formState.isSubmitting;
 
+  /**
+   * フォームの送信時に呼び出される関数。
+   * ユーザーのプロンプトをAPIに送信し、生成されたビデオを取得します。
+   * @param {z.infer<typeof formSchema>} prompt - ユーザーが入力したプロンプト
+   * @returns {Promise<void>}
+   */
   const onSubmit = async (
-    userInput: z.infer<typeof formSchema>,
+    prompt: z.infer<typeof formSchema>,
   ): Promise<void> => {
     try {
       setVideo(undefined);
 
-      const response = await axios.post<string>("/api/video", userInput);
+      const response = await axios.post<string>("/api/video", prompt);
 
       console.log("Response Data:", response.data); // response.dataはURLの文字列
 
@@ -47,6 +58,7 @@ const VideoPage = () => {
       router.refresh();
     }
   };
+
   return (
     <div>
       <Heading

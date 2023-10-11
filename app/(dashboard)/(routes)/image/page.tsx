@@ -26,10 +26,16 @@ import { Empty } from "@/components/empty";
 
 import { amountOptions, formSchema, resolutionOptions } from "./constants";
 
+/**
+ * 画像生成ページのメインコンポーネント。
+ * ユーザーがプロンプトを入力し、その応答として画像を生成します。
+ * @returns {JSX.Element} 画像生成ページのコンポーネント
+ */
 const PhotoPage = () => {
   const router = useRouter();
   const [photos, setPhotos] = useState<string[]>([]);
 
+  // フォームの設定
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -41,6 +47,11 @@ const PhotoPage = () => {
 
   const isLoading = form.formState.isSubmitting;
 
+  /**
+   * フォームの送信時の処理。
+   * ユーザーのプロンプトを元に、生成された画像を取得します。
+   * @param {z.infer<typeof formSchema>} values フォームの値
+   */
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       setPhotos([]);

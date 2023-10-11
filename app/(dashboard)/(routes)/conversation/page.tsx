@@ -1,32 +1,36 @@
 "use client";
 
-import axios from "axios";
 import * as z from "zod";
+import axios from "axios";
 import { MessageSquare } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { ChatCompletionRequestMessage } from "openai";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
-import { Heading } from "@/components/heading";
-import { Empty } from "@/components/empty";
-import { Loader } from "@/components/loader";
-import { cn } from "@/lib/utils";
-import { UserAvatar } from "@/components/user-avatar";
 import { BotAvatar } from "@/components/bot-avatar";
+import { Heading } from "@/components/heading";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
+import { cn } from "@/lib/utils";
+import { Loader } from "@/components/loader";
+import { UserAvatar } from "@/components/user-avatar";
+import { Empty } from "@/components/empty";
 
 import { formSchema } from "./constants";
 
+/**
+ * 会話ページのメインコンポーネント。
+ * ユーザーが入力したテキストを元に応答を生成する機能を提供します。
+ * @returns {JSX.Element} 会話ページのコンポーネント
+ */
 const ConversationPage = () => {
   const router = useRouter();
-  const [chatHistory, setChatHistory] = useState<
-    ChatCompletionRequestMessage[]
-  >([]);
+  const [messages, setMessages] = useState<ChatCompletionRequestMessage[]>([]);
 
+  // フォームの設定
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -36,27 +40,26 @@ const ConversationPage = () => {
 
   const isLoading = form.formState.isSubmitting;
 
-  const onSubmit = async (userInput: z.infer<typeof formSchema>) => {
+  /**
+   * フォームの送信時に実行される関数。
+   * ユーザーのプロンプトを元に、生成された応答を取得します。
+   * @param {z.infer<typeof formSchema>} values フォームの入力値
+   */
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       const userMessage: ChatCompletionRequestMessage = {
         role: "user",
-        content: userInput.prompt,
+        content: values.prompt,
       };
-      const newMessages = [...chatHistory, userMessage];
+      const newMessages = [...messages, userMessage];
 
-      const conversationResponse = await axios.post("/api/conversation", {
+      const response = await axios.post("/api/conversation", {
         messages: newMessages,
       });
-      const chatGPTResponse = conversationResponse.data;
-      setChatHistory((chatHistory) => [
-        ...chatHistory,
-        userMessage,
-        chatGPTResponse,
-      ]);
+      setMessages((current) => [...current, userMessage, response.data]);
 
       form.reset();
     } catch (error: any) {
-      // ...
     } finally {
       router.refresh();
     }
@@ -121,22 +124,22 @@ const ConversationPage = () => {
               <Loader />
             </div>
           )}
-          {chatHistory.length === 0 && !isLoading && (
+          {messages.length === 0 && !isLoading && (
             <Empty label="No conversation started." />
           )}
           <div className="flex flex-col-reverse gap-y-4">
-            {chatHistory.map((chatMessage) => (
+            {messages.map((message) => (
               <div
-                key={chatMessage.content}
+                key={message.content}
                 className={cn(
                   "flex w-full items-start gap-x-8 rounded-lg p-8",
-                  chatMessage.role === "user"
+                  message.role === "user"
                     ? "border border-black/10 bg-white"
                     : "bg-muted",
                 )}
               >
-                {chatMessage.role === "user" ? <UserAvatar /> : <BotAvatar />}
-                <p className="text-sm">{chatMessage.content}</p>
+                {message.role === "user" ? <UserAvatar /> : <BotAvatar />}
+                <p className="text-sm">{message.content}</p>
               </div>
             ))}
           </div>

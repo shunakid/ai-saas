@@ -22,10 +22,16 @@ import { Empty } from "@/components/empty";
 
 import { formSchema } from "./constants";
 
+/**
+ * コード生成のページを表示するコンポーネント。
+ * ユーザーのプロンプトを元に、生成されたコードを取得します。
+ * @returns {JSX.Element} コード生成ページのコンポーネント
+ */
 const CodePage = () => {
   const router = useRouter();
   const [messages, setMessages] = useState<ChatCompletionRequestMessage[]>([]);
 
+  // フォームの設定
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -35,6 +41,11 @@ const CodePage = () => {
 
   const isLoading = form.formState.isSubmitting;
 
+  /**
+   * フォームの送信時に実行される関数。
+   * ユーザーのメッセージをAPIに送信し、生成されたコードを取得します。
+   * @param {z.infer<typeof formSchema>} values フォームの入力値
+   */
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       const userMessage: ChatCompletionRequestMessage = {

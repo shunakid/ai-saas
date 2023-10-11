@@ -17,6 +17,11 @@ import { Empty } from "@/components/empty";
 
 import { formSchema } from "./constants";
 
+/**
+ * 音楽生成ページのコンポーネント。
+ * ユーザーがプロンプトを元に、生成された音楽を取得します。
+ * @returns {JSX.Element} 音楽生成ページのコンポーネント
+ */
 const MusicPage = () => {
   const router = useRouter();
   const [music, setMusic] = useState<string>();
@@ -30,13 +35,18 @@ const MusicPage = () => {
 
   const isLoading = form.formState.isSubmitting;
 
+  /**
+   * フォームの送信時に呼び出される関数。
+   * ユーザーのプロンプトをAPIに送信し、生成された音楽を取得します。   * @param {z.infer<typeof formSchema>} prompt - ユーザーが入力したプロンプト
+   * @returns {Promise<void>}
+   */
   const onSubmit = async (
-    userInput: z.infer<typeof formSchema>,
+    prompt: z.infer<typeof formSchema>,
   ): Promise<void> => {
     try {
       setMusic(undefined);
 
-      const response = await axios.post("/api/music", userInput);
+      const response = await axios.post("/api/music", prompt);
 
       console.log("Response Data:", response.data);
 
