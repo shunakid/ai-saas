@@ -1,7 +1,7 @@
 "use client";
 
 import * as z from "zod";
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import Image from "next/image";
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -35,7 +35,9 @@ const PhotoPage = () => {
   const router = useRouter();
   const [photos, setPhotos] = useState<string[]>([]);
 
-  // フォームの設定
+  /**
+   * フォームの設定とバリデーション。
+   */
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -48,22 +50,51 @@ const PhotoPage = () => {
   const isLoading = form.formState.isSubmitting;
 
   /**
+   * 生成された画像の状態をクリアする。
+   */
+  const clearPhotos = () => {
+    setPhotos([]);
+  };
+
+  /**
+   * APIにリクエストを送信し、生成された画像のURLを取得する。
+   * @param {z.infer<typeof formSchema>} values - ユーザーからの入力。
+   * @returns {Promise} APIからのレスポンス。
+   */
+  const sendRequestToAPI = async (values: z.infer<typeof formSchema>) => {
+    return await axios.post("/api/image", values);
+  };
+
+  /**
+   * 生成された画像の状態を更新する。
+   * @param {Array<{ url: string }>} responseData - APIからのレスポンスデータ。
+   */
+  const updatePhotosState = (responseData: { url: string }[]) => {
+    const urls = responseData.map((image: { url: string }) => image.url);
+    setPhotos(urls);
+  };
+
+  /**
+   * ページをリフレッシュする。
+   */
+  const refreshPage = () => {
+    router.refresh();
+  };
+
+  /**
    * フォームの送信時の処理。
-   * ユーザーのプロンプトを元に、生成された画像を取得します。
-   * @param {z.infer<typeof formSchema>} values フォームの値
+   * ユーザーの入力を元に、生成された画像を取得し、状態に反映する。
+   * @param {z.infer<typeof formSchema>} values - ユーザーからの入力。
    */
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      setPhotos([]);
-
-      const response = await axios.post("/api/image", values);
-
-      const urls = response.data.map((image: { url: string }) => image.url);
-
-      setPhotos(urls);
+      clearPhotos();
+      const response = await sendRequestToAPI(values);
+      updatePhotosState(response.data);
     } catch (error: any) {
+      // エラーハンドリング
     } finally {
-      router.refresh();
+      refreshPage();
     }
   };
 

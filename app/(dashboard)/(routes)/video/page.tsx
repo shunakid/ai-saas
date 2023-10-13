@@ -26,6 +26,9 @@ const VideoPage = () => {
   const router = useRouter();
   const [video, setVideo] = useState<string>();
 
+  /**
+   * フォームの設定とバリデーション。
+   */
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -36,26 +39,47 @@ const VideoPage = () => {
   const isLoading = form.formState.isSubmitting;
 
   /**
-   * フォームの送信時に呼び出される関数。
-   * ユーザーのプロンプトをAPIに送信し、生成されたビデオを取得します。
+   * 生成されたビデオの状態をクリアする。
+   */
+  const clearVideo = () => {
+    setVideo(undefined);
+  };
+
+  /**
+   * APIにリクエストを送信し、生成されたビデオのURLを取得する。
    * @param {z.infer<typeof formSchema>} prompt - ユーザーが入力したプロンプト
-   * @returns {Promise<void>}
+   * @returns {Promise<string>} 生成されたビデオのURL
+   */
+  const fetchVideoFromAPI = async (
+    prompt: z.infer<typeof formSchema>,
+  ): Promise<string> => {
+    const response = await axios.post<string>("/api/video", prompt);
+    return response.data;
+  };
+
+  /**
+   * ページをリフレッシュする。
+   */
+  const refreshPage = () => {
+    router.refresh();
+  };
+
+  /**
+   * フォームの送信時の処理。
+   * ユーザーの入力を元に、生成されたビデオを取得し、状態に反映する。
+   * @param {z.infer<typeof formSchema>} prompt - ユーザーが入力したプロンプト
    */
   const onSubmit = async (
     prompt: z.infer<typeof formSchema>,
   ): Promise<void> => {
     try {
-      setVideo(undefined);
-
-      const response = await axios.post<string>("/api/video", prompt);
-
-      console.log("Response Data:", response.data); // response.dataはURLの文字列
-
-      setVideo(response.data);
+      clearVideo();
+      const videoURL = await fetchVideoFromAPI(prompt);
+      setVideo(videoURL);
     } catch (error: unknown) {
       console.error(error);
     } finally {
-      router.refresh();
+      refreshPage();
     }
   };
 

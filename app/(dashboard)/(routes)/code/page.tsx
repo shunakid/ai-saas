@@ -23,15 +23,15 @@ import { Empty } from "@/components/empty";
 import { formSchema } from "./constants";
 
 /**
- * コード生成のページを表示するコンポーネント。
- * ユーザーのプロンプトを元に、生成されたコードを取得します。
- * @returns {JSX.Element} コード生成ページのコンポーネント
+ * ユーザーからの入力を受け取り、APIにリクエストを送信し、結果を表示する。
  */
 const CodePage = () => {
   const router = useRouter();
   const [messages, setMessages] = useState<ChatCompletionRequestMessage[]>([]);
 
-  // フォームの設定
+  /**
+   * フォームの設定とバリデーション。
+   */
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -42,25 +42,64 @@ const CodePage = () => {
   const isLoading = form.formState.isSubmitting;
 
   /**
-   * フォームの送信時に実行される関数。
-   * ユーザーのメッセージをAPIに送信し、生成されたコードを取得します。
-   * @param {z.infer<typeof formSchema>} values フォームの入力値
+   * ユーザーからの入力をメッセージ形式に変換する。
+   * @param {z.infer<typeof formSchema>} values - ユーザーからの入力。
+   * @returns {ChatCompletionRequestMessage} メッセージ形式に変換された入力。
+   */
+  const prepareUserMessage = (
+    values: z.infer<typeof formSchema>,
+  ): ChatCompletionRequestMessage => {
+    return {
+      role: "user",
+      content: values.prompt,
+    };
+  };
+
+  /**
+   * APIにリクエストを送信する。
+   * @param {ChatCompletionRequestMessage} userMessage - ユーザーからのメッセージ。
+   * @returns {Promise} APIからのレスポンス。
+   */
+  const sendRequestToAPI = async (
+    userMessage: ChatCompletionRequestMessage,
+  ) => {
+    const newMessages = [...messages, userMessage];
+    return await axios.post("/api/code", { messages: newMessages });
+  };
+
+  /**
+   * メッセージの状態を更新する。
+   * @param {ChatCompletionRequestMessage} userMessage - ユーザーからのメッセージ。
+   * @param {any} responseData - APIからのレスポンスデータ。
+   */
+  const updateMessagesState = (
+    userMessage: ChatCompletionRequestMessage,
+    responseData: any,
+  ) => {
+    setMessages((current) => [...current, userMessage, responseData]);
+  };
+
+  /**
+   * ページをリフレッシュする。
+   */
+  const refreshPage = () => {
+    router.refresh();
+  };
+
+  /**
+   * フォームの送信時の処理。
+   * ユーザーからの入力をメッセージ形式に変換し、APIにリクエストを送信し、結果を状態に反映する。
+   * @param {z.infer<typeof formSchema>} values - ユーザーからの入力。
    */
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    const userMessage = prepareUserMessage(values);
     try {
-      const userMessage: ChatCompletionRequestMessage = {
-        role: "user",
-        content: values.prompt,
-      };
-      const newMessages = [...messages, userMessage];
-
-      const response = await axios.post("/api/code", { messages: newMessages });
-      setMessages((current) => [...current, userMessage, response.data]);
-
-      form.reset();
+      const response = await sendRequestToAPI(userMessage);
+      updateMessagesState(userMessage, response.data);
     } catch (error: any) {
+      // エラーハンドリング
     } finally {
-      router.refresh();
+      refreshPage();
     }
   };
 

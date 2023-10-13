@@ -26,6 +26,9 @@ const MusicPage = () => {
   const router = useRouter();
   const [music, setMusic] = useState<string>();
 
+  /**
+   * フォームの設定とバリデーション。
+   */
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -36,26 +39,48 @@ const MusicPage = () => {
   const isLoading = form.formState.isSubmitting;
 
   /**
-   * フォームの送信時に呼び出される関数。
-   * ユーザーのプロンプトをAPIに送信し、生成された音楽を取得します。   * @param {z.infer<typeof formSchema>} prompt - ユーザーが入力したプロンプト
-   * @returns {Promise<void>}
+   * 生成された音楽の状態をクリアする。
+   */
+  const clearMusic = () => {
+    setMusic(undefined);
+  };
+
+  /**
+   * APIにリクエストを送信し、生成された音楽のURLを取得する。
+   * @param {z.infer<typeof formSchema>} prompt - ユーザーが入力したプロンプト
+   * @returns {Promise<string>} 生成された音楽のURL
+   */
+  const fetchMusicFromAPI = async (
+    prompt: z.infer<typeof formSchema>,
+  ): Promise<string> => {
+    const response = await axios.post("/api/music", prompt);
+    return response.data.audio;
+  };
+
+  /**
+   * ページをリフレッシュする。
+   */
+  const refreshPage = () => {
+    router.refresh();
+  };
+
+  /**
+   * フォームの送信時の処理。
+   * ユーザーの入力を元に、生成された音楽を取得し、状態に反映する。
+   * @param {z.infer<typeof formSchema>} prompt - ユーザーが入力したプロンプト
    */
   const onSubmit = async (
     prompt: z.infer<typeof formSchema>,
   ): Promise<void> => {
     try {
-      setMusic(undefined);
-
-      const response = await axios.post("/api/music", prompt);
-
-      console.log("Response Data:", response.data);
-
-      setMusic(response.data.audio);
-
+      clearMusic();
+      const musicURL = await fetchMusicFromAPI(prompt);
+      setMusic(musicURL);
       form.reset();
     } catch (error: unknown) {
+      console.error(error);
     } finally {
-      router.refresh();
+      refreshPage();
     }
   };
 
