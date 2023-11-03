@@ -7,6 +7,8 @@ import { openAIApiInstance } from "../utils/openAIConfig";
 import { handleRequest } from "../utils/requestHandler";
 import { handleErrors } from "../utils/errorHandling";
 
+export const maxDuration = 300;
+
 // OpenAIのAPIを呼び出す際の指示メッセージ
 const instructionMessage: ChatCompletionRequestMessage = {
   role: "system",

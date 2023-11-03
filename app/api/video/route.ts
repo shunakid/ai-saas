@@ -6,6 +6,8 @@ import { handleRequest } from "../utils/requestHandler";
 import { handleErrors } from "../utils/errorHandling";
 import { replicateAIConfiguration } from "../utils/ReplicateAIConfig";
 
+export const maxDuration = 300;
+
 export async function POST(req: Request): Promise<NextResponse> {
   try {
     const { userId, body } = await handleRequest(req);

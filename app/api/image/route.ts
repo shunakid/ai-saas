@@ -6,6 +6,7 @@ import { openAIApiInstance } from "../utils/openAIConfig";
 import { handleRequest } from "../utils/requestHandler";
 import { handleErrors } from "../utils/errorHandling";
 
+export const maxDuration = 300;
 /**
  * POSTリクエストを処理する非同期関数。
  * ユーザーのリクエストを受け取り、OpenAIのAPIを呼び出して画像を生成し、結果を返す。
