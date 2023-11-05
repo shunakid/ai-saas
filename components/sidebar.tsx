@@ -16,6 +16,8 @@ import { usePathname } from "next/navigation";
 
 import { cn } from "@/lib/utils";
 
+import { FreeCounter } from "./free-counter";
+
 // Montserratフォントの設定
 const montserrat = Montserrat({
   weight: "600",
@@ -67,7 +69,11 @@ const routes = [
   },
 ];
 
-const Sidebar = () => {
+interface SidebarProps {
+  apiLimitCount: number;
+}
+
+const Sidebar = ({ apiLimitCount = 0 }: SidebarProps) => {
   // 現在のページのパスを取得
   const pathname = usePathname();
 
@@ -105,6 +111,7 @@ const Sidebar = () => {
           ))}
         </div>
       </div>
+      <FreeCounter apiLimitCount={apiLimitCount} />
     </div>
   );
 };
