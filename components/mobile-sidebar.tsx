@@ -7,8 +7,11 @@ import { Button } from "./ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 import Sidebar from "./sidebar";
 
-const MobileSidebar = () => {
-  // 遅延レンダリングを行い、Hydration errorを回避する
+export const MobileSidebar = ({
+  apiLimitCount = 0,
+}: {
+  apiLimitCount: number;
+}) => {
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -28,7 +31,7 @@ const MobileSidebar = () => {
           </Button>
         </SheetTrigger>
         <SheetContent side="left" className="p-0">
-          <Sidebar />
+          <Sidebar apiLimitCount={apiLimitCount} />
         </SheetContent>
       </Sheet>
     </div>
