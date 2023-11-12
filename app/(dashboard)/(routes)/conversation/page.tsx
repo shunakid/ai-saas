@@ -18,6 +18,7 @@ import { cn } from "@/lib/utils";
 import { Loader } from "@/components/loader";
 import { UserAvatar } from "@/components/user-avatar";
 import { Empty } from "@/components/empty";
+import { useProModal } from "@/hooks/use-pro-modal";
 
 import { formSchema } from "./constants";
 
@@ -28,6 +29,8 @@ import { formSchema } from "./constants";
  */
 const ConversationPage = () => {
   const router = useRouter();
+  const proModal = useProModal();
+
   const [messages, setMessages] = useState<ChatCompletionRequestMessage[]>([]);
 
   /**
@@ -98,7 +101,9 @@ const ConversationPage = () => {
       const response = await sendRequestToAPI(userMessage);
       updateMessagesState(userMessage, response.data);
     } catch (error: any) {
-      // エラーハンドリング
+      if (error?.response?.status === 403) {
+        proModal.onOpen();
+      }
     } finally {
       refreshPage();
     }
