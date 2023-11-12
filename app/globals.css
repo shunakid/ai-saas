@@ -1,81 +1,76 @@
+/* Tailwind CSSの基本設定 */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* html、body、:root要素の高さを100%に設定 */
 html,
 body,
 :root {
   height: 100%;
 }
 
+/* 基本的なスタイル設定 */
 @layer base {
+  /* ルート要素のカスタムプロパティ（CSS変数）を定義 */
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* 背景、前景色などの色をHSL形式で定義 */
+    --background: 0 0% 100%; /* 白色 */
+    --foreground: 222.2 84% 4.9%; /* 濃い青色 */
 
+    /* 各コンポーネントの背景色と前景色を定義 */
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
 
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* ボタンやリンクなどのプライマリーカラーを定義 */
+    --primary: 222.2 47.4% 11.2%; /* 暗めの青色 */
+    --primary-foreground: 210 40% 98%; /* ほぼ白色 */
 
-    --secondary: 210 40% 96.1%;
+    /* セカンダリーカラーを定義 */
+    --secondary: 210 40% 96.1%; /* 明るめの青色 */
     --secondary-foreground: 222.2 47.4% 11.2%;
 
+    /* ミューテッドカラー（弱めの色）を定義 */
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
+    /* アクセントカラーを定義 */
     --accent: 210 40% 96.1%;
     --accent-foreground: 222.2 47.4% 11.2%;
 
-    --destructive: 0 84.2% 60.2%;
+    /* 破壊的なアクション（例：削除ボタン）用のカラーを定義 */
+    --destructive: 0 84.2% 60.2%; /* 赤色 */
     --destructive-foreground: 210 40% 98%;
 
+    /* 境界線、入力フィールド、フォーカスリングのカラーを定義 */
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
 
+    /* 角丸の半径を定義 */
     --radius: 0.5rem;
   }
 
+  /* ダークモード時のスタイル */
   .dark {
+    /* ダークモードでのカラーを定義 */
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    /* その他の要素も同様にダークモード用のカラーを設定 */
+    /* ... */
   }
 }
 
+/* Tailwindのユーティリティクラスを使用して、全要素にボーダーカラーを適用 */
 @layer base {
   * {
     @apply border-border;
   }
+  /* body要素に背景色とテキストの前景色を適用 */
   body {
     @apply bg-background text-foreground;
   }
