@@ -73,7 +73,7 @@ interface SidebarProps {
   apiLimitCount: number;
 }
 
-const Sidebar = ({ apiLimitCount = 0 }: SidebarProps) => {
+export const Sidebar = ({ apiLimitCount = 0 }: { apiLimitCount: number }) => {
   // 現在のページのパスを取得
   const pathname = usePathname();
 
@@ -111,7 +111,7 @@ const Sidebar = ({ apiLimitCount = 0 }: SidebarProps) => {
           ))}
         </div>
       </div>
-      <FreeCounter apiLimitCount={apiLimitCount} />
+      <FreeCounter apiLimitCount={apiLimitCount} />{" "}
     </div>
   );
 };
