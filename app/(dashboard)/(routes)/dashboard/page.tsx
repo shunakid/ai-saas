@@ -1,64 +1,24 @@
 "use client";
 
-import {
-  ArrowRight,
-  Code,
-  ImageIcon,
-  MessageSquare,
-  Music,
-  VideoIcon,
-} from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { tools } from "@/constants";
 
-const tools = [
-  {
-    label: "Conversation",
-    icon: MessageSquare,
-    color: "text-violet-500",
-    bgColor: "bg-violet-500/10",
-    href: "/conversation",
-  },
-  {
-    label: "Music Generator",
-    icon: Music,
-    color: "text-emerald-500",
-    bgColor: "bg-emerald-500/10",
-    href: "/music",
-  },
-  {
-    label: "Image Generator",
-    icon: ImageIcon,
-    color: "text-pink-700",
-    bgColor: "bg-pink-700/10",
-    href: "/image",
-  },
-  {
-    label: "Video Generator",
-    icon: VideoIcon,
-    color: "text-orange-700",
-    bgColor: "bg-orange-700/10",
-    href: "/video",
-  },
-  {
-    label: "Code Generator",
-    icon: Code,
-    color: "text-green-700",
-    bgColor: "bg-green-700/10",
-    href: "/code",
-  },
-];
-
-const DashboardPage = () => {
+export default function HomePage() {
   const router = useRouter();
+
   return (
     <div>
       <div className="mb-8 space-y-4">
         <h2 className="text-center text-2xl font-bold md:text-4xl">
-          Explor the power of AI
+          Explore the power of AI
         </h2>
+        <p className="text-center text-sm font-light text-muted-foreground md:text-lg">
+          Chat with the smartest AI - Experience the power of AI
+        </p>
       </div>
       <div className="space-y-4 px-4 md:px-20 lg:px-32">
         {tools.map((tool) => (
@@ -79,6 +39,4 @@ const DashboardPage = () => {
       </div>
     </div>
   );
-};
-
-export default DashboardPage;
+}
