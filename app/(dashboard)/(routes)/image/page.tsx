@@ -101,8 +101,8 @@ const PhotoPage = () => {
   return (
     <div>
       <Heading
-        title="Image Generation"
-        description="Turn your prompt into an image."
+        title="画像生成"
+        description="あなたの作りたい画像を生成します"
         icon={ImageIcon}
         iconColor="text-pink-700"
         bgColor="bg-pink-700/10"
@@ -132,7 +132,7 @@ const PhotoPage = () => {
                     <Input
                       className="border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent"
                       disabled={isLoading}
-                      placeholder="A picture of a horse in Swiss alps"
+                      placeholder="スイスのアルプスの馬"
                       {...field}
                     />
                   </FormControl>
@@ -199,7 +199,7 @@ const PhotoPage = () => {
               disabled={isLoading}
               size="icon"
             >
-              Generate
+              生成
             </Button>
           </form>
         </Form>
@@ -209,7 +209,7 @@ const PhotoPage = () => {
           </div>
         )}
         {photos.length === 0 && !isLoading && (
-          <Empty label="No images generated." />
+          <Empty label="ここに表示されます" />
         )}
         <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {photos.map((src) => (
@@ -224,7 +224,7 @@ const PhotoPage = () => {
                   className="w-full"
                 >
                   <Download className="mr-2 h-4 w-4" />
-                  Download
+                  ダウンロード
                 </Button>
               </CardFooter>
             </Card>

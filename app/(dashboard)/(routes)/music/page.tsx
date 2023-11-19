@@ -87,8 +87,8 @@ const MusicPage = () => {
   return (
     <div>
       <Heading
-        title="Music Generation"
-        description="Turn your prompt into music."
+        title="音楽生成"
+        description="あなたの聴きたい音楽を生成します。"
         icon={Music}
         iconColor="text-emerald-500"
         bgColor="bg-emerald-500/10"
@@ -118,7 +118,7 @@ const MusicPage = () => {
                     <Input
                       className="border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent"
                       disabled={isLoading}
-                      placeholder="Piano solo"
+                      placeholder="ピアノソロ"
                       {...field}
                     />
                   </FormControl>
@@ -131,7 +131,7 @@ const MusicPage = () => {
               disabled={isLoading}
               size="icon"
             >
-              Generate
+              生成
             </Button>
           </form>
         </Form>
@@ -140,7 +140,7 @@ const MusicPage = () => {
             <Loader />
           </div>
         )}
-        {!music && !isLoading && <Empty label="No music generated." />}
+        {!music && !isLoading && <Empty label="ここに表示されます" />}
         {music && (
           <audio controls className="mt-8 w-full">
             <source src={music} />

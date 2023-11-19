@@ -86,8 +86,8 @@ const VideoPage = () => {
   return (
     <div>
       <Heading
-        title="Video Generation"
-        description="Turn your prompt into video."
+        title="動画生成"
+        description="あなたの見たい動画を生成します。"
         icon={FileAudio}
         iconColor="text-orange-700"
         bgColor="bg-orange-700/10"
@@ -117,7 +117,7 @@ const VideoPage = () => {
                     <Input
                       className="border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent"
                       disabled={isLoading}
-                      placeholder="Clown fish swimming in a coral reef"
+                      placeholder="サンゴ礁の中を泳ぐカクレクマノミ"
                       {...field}
                     />
                   </FormControl>
@@ -130,7 +130,7 @@ const VideoPage = () => {
               disabled={isLoading}
               size="icon"
             >
-              Generate
+              生成
             </Button>
           </form>
         </Form>
@@ -139,7 +139,7 @@ const VideoPage = () => {
             <Loader />
           </div>
         )}
-        {!video && !isLoading && <Empty label="No video files generated." />}
+        {!video && !isLoading && <Empty label="ここに表示されます" />}
         {video && (
           <video
             controls

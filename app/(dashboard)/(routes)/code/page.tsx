@@ -106,8 +106,8 @@ const CodePage = () => {
   return (
     <div>
       <Heading
-        title="Code Generation"
-        description="Generate code using descriptive text."
+        title="プログラミングコード生成"
+        description="あなたの書きたいプログラムを生成"
         icon={Code}
         iconColor="text-green-700"
         bgColor="bg-green-700/10"
@@ -138,7 +138,7 @@ const CodePage = () => {
                       <Input
                         className="border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent"
                         disabled={isLoading}
-                        placeholder="Simple toggle button using react hooks."
+                        placeholder="react hooksを使ったシンプルなトグルボタンの作り方"
                         {...field}
                       />
                     </FormControl>
@@ -151,7 +151,7 @@ const CodePage = () => {
                 disabled={isLoading}
                 size="icon"
               >
-                Generate
+                生成
               </Button>
             </form>
           </Form>
@@ -163,7 +163,7 @@ const CodePage = () => {
             </div>
           )}
           {messages.length === 0 && !isLoading && (
-            <Empty label="No conversation started." />
+            <Empty label="ここに表示されます" />
           )}
           <div className="flex flex-col-reverse gap-y-4">
             {messages.map((message) => (

@@ -27,43 +27,43 @@ const montserrat = Montserrat({
 // サイドバーに表示されるナビゲーションリンクの情報を持つ配列
 const routes = [
   {
-    label: "Dashboard",
+    label: "ダッシュボード",
     icon: LayoutDashboard,
     href: "/dashboard",
     color: "text-sky-500",
   },
   {
-    label: "Conversation",
+    label: "会話",
     icon: MessagesSquare,
     href: "/conversation",
     color: "text-violet-500",
   },
   {
-    label: "Image Generator",
+    label: "画像",
     icon: ImageIcon,
     href: "/image",
     color: "text-pink-500",
   },
   {
-    label: "Video Generator",
+    label: "動画",
     icon: VideoIcon,
     href: "/video",
     color: "text-orange-500",
   },
   {
-    label: "Music Generator",
+    label: "音楽",
     icon: Music,
     href: "/music",
     color: "text-emerald-500",
   },
   {
-    label: "Code Generator",
+    label: "コード",
     icon: Code,
     href: "/code",
     color: "text-yellow-500",
   },
   {
-    label: "Settings",
+    label: "設定",
     icon: Settings,
     href: "/setting",
   },

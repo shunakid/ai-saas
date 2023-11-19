@@ -41,7 +41,7 @@ export const ProModal = () => {
         <DialogHeader>
           <DialogTitle className="flex flex-col items-center justify-center gap-y-4 pb-2">
             <div className="flex items-center gap-x-2 text-xl font-bold">
-              アップグレード
+              PRO版にアップグレード
               <Badge variant="premium" className="py-1 text-sm uppercase">
                 pro
               </Badge>
@@ -72,7 +72,7 @@ export const ProModal = () => {
             variant="premium"
             className="w-full"
           >
-            Upgrade
+            次へ
             <Zap className="ml-2 h-4 w-4 fill-white" />
           </Button>
         </DialogFooter>
