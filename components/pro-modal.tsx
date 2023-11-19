@@ -41,7 +41,7 @@ export const ProModal = () => {
         <DialogHeader>
           <DialogTitle className="flex flex-col items-center justify-center gap-y-4 pb-2">
             <div className="flex items-center gap-x-2 text-xl font-bold">
-              Upgrade to Genius
+              アップグレード
               <Badge variant="premium" className="py-1 text-sm uppercase">
                 pro
               </Badge>

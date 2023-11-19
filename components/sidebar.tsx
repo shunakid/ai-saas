@@ -85,7 +85,7 @@ export const Sidebar = ({ apiLimitCount = 0 }: { apiLimitCount: number }) => {
             <Image fill alt="Logo" src="/logo.png" />
           </div>
           <h1 className={cn("text-2xl font-bold", montserrat.className)}>
-            Genius
+            AI hub
           </h1>
         </Link>
         <div className=" space-y-1">

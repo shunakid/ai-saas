@@ -29,7 +29,7 @@ export const FreeCounter = ({
         <CardContent className="py-6">
           <div className="mb-4 space-y-2 text-center text-sm text-white">
             <p>
-              {apiLimitCount} / {MAX_FREE_COUNTS} Free Generations
+              {apiLimitCount} / {MAX_FREE_COUNTS} 残りの無料枠
             </p>
             <Progress
               className="h-3"
@@ -41,7 +41,7 @@ export const FreeCounter = ({
             variant="premium"
             className="w-full"
           >
-            Upgrade
+            アップグレード
             <Zap className="ml-2 h-4 w-4 fill-white" />
           </Button>
         </CardContent>

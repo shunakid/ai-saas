@@ -13,11 +13,8 @@ export default function HomePage() {
   return (
     <div>
       <div className="mb-8 space-y-4">
-        <h2 className="text-center text-2xl font-bold md:text-4xl">
-          Explore the power of AI
-        </h2>
         <p className="text-center text-sm font-light text-muted-foreground md:text-lg">
-          Chat with the smartest AI - Experience the power of AI
+          AIとチャットしよう - AIの力を体験しよう
         </p>
       </div>
       <div className="space-y-4 px-4 md:px-20 lg:px-32">
