@@ -1,36 +1,18 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
+// 複数のCSSクラスを組み合わせてマージする
+// `clsx` はクラス名を結合し、`twMerge` はTailwind CSSクラスを適切にマージする
+// inputs: 組み合わせたいクラス名の配列（可変長引数）
 export function cn(...inputs: ClassValue[]) {
+  // `clsx` でクラス名を結合し、その後 `twMerge` でTailwind CSSの重複を解消
   return twMerge(clsx(inputs));
 }
 
-// 同じ役割を持ったクラス名が重複して表示がバグる不具合を回避する関数
-
-// 使用例:
-
-// 1. 基本的な使用法:
-// const className = cn('text-red-500', 'bg-blue-200');
-// console.log(className); // 'text-red-500 bg-blue-200'
-
-// 2. 条件付きクラスの追加:
-// const isActive = true;
-// const className = cn('text-red-500', isActive && 'bg-blue-200');
-// console.log(className); // 'text-red-500 bg-blue-200'
-
-// 3. クラスの競合を解消:
-// const className = cn('px-4', 'px-6', 'bg-green-300');
-// console.log(className); // 'px-6 bg-green-300'
-
-// 4. オブジェクトを使用して条件付きクラスを追加:
-// const isDisabled = false;
-// const className = cn({
-//   'text-red-500': true,
-//   'bg-gray-200': isDisabled
-// });
-// console.log(className); // 'text-red-500'
-
-// 5. 配列を使用してクラスを結合:
-// const baseClasses = ['text-red-500', 'bg-blue-200'];
-// const className = cn(baseClasses, 'px-4');
-// console.log(className); // 'text-red-500 bg-blue-200 px-4'
+// 指定されたパスに基づいて絶対URLを生成する
+// process.env.NEXT_PUBLIC_APP_URL: 環境変数からアプリケーションのベースURLを取得
+// path: ベースURLに追加するパス
+export function absoluteUrl(path: string) {
+  // 環境変数で定義されたベースURLと指定されたパスを結合して絶対URLを生成
+  return `${process.env.NEXT_PUBLIC_APP_URL}${path}`;
+}
