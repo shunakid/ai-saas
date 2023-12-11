@@ -65,7 +65,7 @@ const routes = [
   {
     label: "設定",
     icon: Settings,
-    href: "/setting",
+    href: "/settings",
   },
 ];
 
@@ -73,8 +73,13 @@ interface SidebarProps {
   apiLimitCount: number;
 }
 
-export const Sidebar = ({ apiLimitCount = 0 }: { apiLimitCount: number }) => {
-  // 現在のページのパスを取得
+export const Sidebar = ({
+  apiLimitCount = 0,
+  isPro = false,
+}: {
+  apiLimitCount: number;
+  isPro: boolean;
+}) => {
   const pathname = usePathname();
 
   return (
@@ -111,7 +116,7 @@ export const Sidebar = ({ apiLimitCount = 0 }: { apiLimitCount: number }) => {
           ))}
         </div>
       </div>
-      <FreeCounter apiLimitCount={apiLimitCount} />{" "}
+      <FreeCounter isPro={isPro} apiLimitCount={apiLimitCount} />{" "}
     </div>
   );
 };
