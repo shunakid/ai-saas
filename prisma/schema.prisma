@@ -31,3 +31,13 @@ model UserSubscription {
   stripePriceId          String?   @map(name: "stripe_price_id")  // 定期購読の価格を識別するために使用されるID
   stripeCurrentPeriodEnd DateTime? @map(name: "stripe_current_period_end")  // Stripeの現在の期間終了日時, 定期購読の現在の支払期間の終了日時
 }
+
+model User {
+  id String @id @default(uuid())
+  username String @unique
+  imageUrl String @db.Text
+  externalUserId String @unique
+  bio String? @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
