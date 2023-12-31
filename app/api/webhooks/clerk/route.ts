@@ -5,38 +5,39 @@ import { WebhookEvent } from "@clerk/nextjs/server";
 import prismadb from "@/lib/prismadb";
 
 export async function POST(req: Request) {
-  // You can find this in the Clerk Dashboard -> Webhooks -> choose the webhook
+  // Clerkのダッシュボードから取得したWebhookシークレットキー
   const WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SECRET;
 
+  // シークレットキーが設定されていない場合はエラー
   if (!WEBHOOK_SECRET) {
     throw new Error(
       "Please add CLERK_WEBHOOK_SECRET from Clerk Dashboard to .env or .env.local",
     );
   }
 
-  // Get the headers
+  // ヘッダーからWebhook関連の情報を取得
   const headerPayload = headers();
   const svix_id = headerPayload.get("svix-id");
   const svix_timestamp = headerPayload.get("svix-timestamp");
   const svix_signature = headerPayload.get("svix-signature");
 
-  // If there are no headers, error out
+  // 必要なヘッダーが欠けている場合はエラーレスポンスを返す
   if (!svix_id || !svix_timestamp || !svix_signature) {
     return new Response("Error occured -- no svix headers", {
       status: 400,
     });
   }
 
-  // Get the body
+  // リクエストボディを取得し、JSON形式に変換
   const payload = await req.json();
   const body = JSON.stringify(payload);
 
-  // Create a new Svix instance with your secret.
+  // Webhookインスタンスを作成
   const wh = new Webhook(WEBHOOK_SECRET);
 
   let evt: WebhookEvent;
 
-  // Verify the payload with the headers
+  // ヘッダー情報を使用してペイロードの検証を試みる
   try {
     evt = wh.verify(body, {
       "svix-id": svix_id,
@@ -50,37 +51,18 @@ export async function POST(req: Request) {
     });
   }
 
+  // イベントタイプを取得
   const eventType = evt.type;
 
-  if (eventType === "user.created") {
+  // セッション作成イベントの場合、データベースにユーザー情報を登録
+  if (eventType === "session.created") {
     await prismadb.user.create({
       data: {
-        externalUserId: payload.data.id,
-        username: payload.data.username,
-        imageUrl: payload.data.image_url,
+        user_id: payload.data.user_id,
       },
     });
   }
 
-  if (eventType === "user.updated") {
-    await prismadb.user.update({
-      where: {
-        externalUserId: payload.data.id,
-      },
-      data: {
-        username: payload.data.username,
-        imageUrl: payload.data.image_url,
-      },
-    });
-  }
-
-  if (eventType === "user.deleted") {
-    await prismadb.user.delete({
-      where: {
-        externalUserId: payload.data.id,
-      },
-    });
-  }
-
+  // 処理が正常に完了した場合、空のレスポンスを返す
   return new Response("", { status: 200 });
 }
