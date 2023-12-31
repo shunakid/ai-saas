@@ -1,9 +1,22 @@
-import { authMiddleware } from "@clerk/nextjs";
+import { authMiddleware, redirectToSignIn } from "@clerk/nextjs";
+import { NextResponse } from "next/server";
 
-// This example protects all routes including api/trpc routes
-// Please edit this to allow other routes to be public as needed.
-// See https://clerk.com/docs/references/nextjs/auth-middleware for more information about configuring your middleware
+// この例では、api/trpc ルートを含む全てのルートを保護します。
+// 必要に応じて、他のルートを公開として設定してください。
+// ミドルウェアの設定についての詳細は https://clerk.com/docs/references/nextjs/auth-middleware を参照してください。
 export default authMiddleware({
+  afterAuth(auth, req) {
+    // 認証されていないユーザーを処理する
+    if (!auth.userId && !auth.isPublicRoute) {
+      return redirectToSignIn({ returnBackUrl: req.url });
+    }
+    // ユーザーがログインしており、保護されたルートにアクセスしようとしている場合は、ルートにアクセスさせる
+    if (auth.userId && !auth.isPublicRoute) {
+      return NextResponse.next();
+    }
+    // 公開ルートを訪れているユーザーには、アクセスを許可する
+    return NextResponse.next();
+  },
   publicRoutes: ["/", "/api/webhook", "/api/webhooks(.*)"],
 });
 
