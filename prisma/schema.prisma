@@ -32,9 +32,14 @@ model UserSubscription {
   stripeCurrentPeriodEnd DateTime? @map(name: "stripe_current_period_end")  // Stripeの現在の期間終了日時, 定期購読の現在の支払期間の終了日時
 }
 
+// ユーザー情報を管理するモデル
 model User {
-  id String @id @default(uuid())
-  user_id String @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                   String   @id @default(uuid())              // 一意識別子
+  userid               String   @unique                           // ユーザーID
+  firstName            String?                                    // 名
+  lastName             String?                                    // 姓
+  imageUrl             String?                                   // プロフィール画像のURL
+  primaryEmailAddress  Json?                                      // メールアドレス
+  createdAt            DateTime @default(now())                   // 作成日時
+  updatedAt            DateTime @updatedAt                        // 更新日時
 }

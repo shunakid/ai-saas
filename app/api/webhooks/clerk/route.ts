@@ -6,17 +6,17 @@ import { clerkClient } from "@clerk/nextjs";
 import prismadb from "@/lib/prismadb";
 
 export async function POST(req: Request) {
-  // Clerkのダッシュボードから取得したWebhookシークレットキー
+  // Clerkのダッシュボードから取得したWebhookシークレットキーを取得
   const WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SECRET;
 
-  // シークレットキーが設定されていない場合はエラー
+  // シークレットキーが設定されていない場合はエラーを投げる
   if (!WEBHOOK_SECRET) {
     throw new Error(
       "Please add CLERK_WEBHOOK_SECRET from Clerk Dashboard to .env or .env.local",
     );
   }
 
-  // ヘッダーからWebhook関連の情報を取得
+  // リクエストヘッダーからWebhook関連の情報を取得
   const headerPayload = headers();
   const svix_id = headerPayload.get("svix-id");
   const svix_timestamp = headerPayload.get("svix-timestamp");
@@ -29,26 +29,15 @@ export async function POST(req: Request) {
     });
   }
 
-  // リクエストボディを取得し、JSON形式に変換
+  // リクエストボディをJSON形式で取得
   const payload = await req.json();
   const body = JSON.stringify(payload);
 
-  const userId = payload.data.user_id;
-
-  const clerkUser = await clerkClient.users.getUser(userId);
-
-  const firstName = clerkUser.firstName;
-  const lastName = clerkUser.lastName;
-
-  console.log("First Name:", firstName);
-  console.log("Last Name:", lastName);
-
-  // Webhookインスタンスを作成
+  // Webhookインスタンスを初期化
   const wh = new Webhook(WEBHOOK_SECRET);
-
   let evt: WebhookEvent;
 
-  // ヘッダー情報を使用してペイロードの検証を試みる
+  // ヘッダー情報を使用してペイロードを検証
   try {
     evt = wh.verify(body, {
       "svix-id": svix_id,
@@ -62,24 +51,37 @@ export async function POST(req: Request) {
     });
   }
 
-  // イベントタイプを取得
+  // Webhookイベントのタイプを取得
   const eventType = evt.type;
 
-  // セッション作成イベントの場合、データベースにユーザー情報を登録
+  // セッション作成イベントが発生した場合の処理
   if (eventType === "session.created") {
-    // user_idが既に存在するかをチェック
-    const existingUser = await prismadb.user.findUnique({
-      where: { user_id: payload.data.user_id },
-    });
+    const userId = payload.data.user_id;
 
-    // user_idが存在しない場合のみ新しいユーザーを作成
-    if (!existingUser) {
-      await prismadb.user.create({
-        data: {
-          user_id: payload.data.user_id,
-        },
-      });
-    }
+    // Clerkからユーザー情報を取得
+    const clerkUser = await clerkClient.users.getUser(userId);
+
+    // Prismaを使用してユーザー情報を保存または更新
+    await prismadb.user.upsert({
+      where: { userid: userId },
+      create: {
+        userid: clerkUser.id,
+        firstName: clerkUser.firstName,
+        lastName: clerkUser.lastName,
+        imageUrl: clerkUser.imageUrl,
+        primaryEmailAddress: clerkUser.primaryEmailAddressId
+          ? JSON.stringify(clerkUser.primaryEmailAddressId)
+          : { set: null },
+      },
+      update: {
+        firstName: clerkUser.firstName,
+        lastName: clerkUser.lastName,
+        imageUrl: clerkUser.imageUrl,
+        primaryEmailAddress: clerkUser.primaryEmailAddressId
+          ? JSON.stringify(clerkUser.primaryEmailAddressId)
+          : { set: null },
+      },
+    });
   }
 
   // 処理が正常に完了した場合、空のレスポンスを返す
