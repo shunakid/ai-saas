@@ -51,19 +51,24 @@ export async function POST(req: Request) {
     });
   }
 
-  console.log("Webhook event data:", evt); // evt オブジェクトの内容をログに出力
-
   // イベントタイプを取得
-  // const eventType = evt.type;
-  const eventType = "session.created"; // 仮のイベントタイプを設定
+  const eventType = evt.type;
 
   // セッション作成イベントの場合、データベースにユーザー情報を登録
   if (eventType === "session.created") {
-    await prismadb.user.create({
-      data: {
-        user_id: payload.data.user_id,
-      },
+    // user_idが既に存在するかをチェック
+    const existingUser = await prismadb.user.findUnique({
+      where: { user_id: payload.data.user_id },
     });
+
+    // user_idが存在しない場合のみ新しいユーザーを作成
+    if (!existingUser) {
+      await prismadb.user.create({
+        data: {
+          user_id: payload.data.user_id,
+        },
+      });
+    }
   }
 
   // 処理が正常に完了した場合、空のレスポンスを返す
