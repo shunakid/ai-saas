@@ -15,31 +15,47 @@ generator client {
 
 // ユーザーごとのAPI制限を管理するモデル
 model UserApiLimit {
-  id        String      @id @default(cuid())       // 一意のID
-  userId    String   @unique                      // ユーザーID (一意)
-  count     Int      @default(0)                  // API呼び出し回数
-  createdAt DateTime @default(now())              // 作成日時
-  updatedAt DateTime @updatedAt                   // 更新日時
+  id        String   @id @default(cuid()) // 一意のID
+  userId    String   @unique              // ユーザーID (一意)
+  count     Int      @default(0)          // API呼び出し回数
+  createdAt DateTime @default(now())      // 作成日時
+  updatedAt DateTime @updatedAt           // 更新日時
 }
 
 // ユーザーごとのサブスクリプションを管理するモデル
 model UserSubscription {
-  id        String      @id @default(cuid())  // 一意のID
-  userId    String   @unique                 // ユーザーID
-  stripeCustomerId       String?   @unique @map(name: "stripe_customer_id")  // Stripeの決済処理に使用される顧客ID
-  stripeSubscriptionId   String?   @unique @map(name: "stripe_subscription_id")  // Stripeの定期購読管理に使用されるID
-  stripePriceId          String?   @map(name: "stripe_price_id")  // 定期購読の価格を識別するために使用されるID
-  stripeCurrentPeriodEnd DateTime? @map(name: "stripe_current_period_end")  // Stripeの現在の期間終了日時, 定期購読の現在の支払期間の終了日時
+  id                     String    @id @default(cuid())         // 一意のID
+  userId                 String    @unique                      // ユーザーID
+  stripeCustomerId       String?   @unique @map(name: "stripe_customer_id")   // Stripeの決済処理に使用される顧客ID
+  stripeSubscriptionId   String?   @unique @map(name: "stripe_subscription_id")                                       // Stripeの定期購読管理に使用されるID
+  stripePriceId          String?   @map(name: "stripe_price_id")              // 定期購読の価格を識別するために使用されるID
+  stripeCurrentPeriodEnd DateTime? @map(name: "stripe_current_period_end")    // Stripeの現在の期間終了日時, 定期購読の現在の支払期間の終了日時
 }
 
 // ユーザー情報を管理するモデル
 model User {
   id             String   @id @default(uuid()) // 一意識別子
-  userid         String   @unique              // ユーザーID
+  userId         String   @unique              // ユーザーID
   firstName      String?                       // 名
   lastName       String?                       // 姓
   imageUrl       String?                       // プロフィール画像のURL
-  emailAddresses Json?                         // メールアドレス
+  emailAddresses EmailAddress[]                // EmailAddress モデルへのリレーション
   createdAt      DateTime @default(now())      // 作成日時
   updatedAt      DateTime @updatedAt           // 更新日時
+
+  // Userモデルに直接インデックスを設定するため、スカラーフィールドを対象にする。
+  @@index([userId])
+}
+
+// ユーザーのメールアドレス情報を管理するモデル
+model EmailAddress {
+  id            String   @id @default(uuid()) // メールアドレスの一意識別子（UUID）
+  emailAddress  String                        // メールアドレス本体
+  user          User     @relation(fields: [userId], references: [id])
+  // Userモデルへのリレーション
+  userId        String                        // Userモデルへの外部キー
+
+  // EmailAddressモデルのuserIdフィールドにインデックスを設定
+  // これにより、特定のユーザーに関連するメールアドレスを効率的に検索できる
+  @@index([userId])
 }

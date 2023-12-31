@@ -63,23 +63,22 @@ export async function POST(req: Request) {
 
     // Prismaを使用してユーザー情報を保存または更新
     await prismadb.user.upsert({
-      where: { userid: userId },
+      where: { userId: userId },
       create: {
-        userid: clerkUser.id,
+        userId: clerkUser.id,
         firstName: clerkUser.firstName,
         lastName: clerkUser.lastName,
         imageUrl: clerkUser.imageUrl,
-        emailAddresses: clerkUser.primaryEmailAddressId
-          ? JSON.stringify(clerkUser.primaryEmailAddressId)
-          : { set: null },
+        emailAddresses: {
+          create: clerkUser.emailAddresses.map((email) => ({
+            emailAddress: email.emailAddress,
+          })),
+        },
       },
       update: {
         firstName: clerkUser.firstName,
         lastName: clerkUser.lastName,
         imageUrl: clerkUser.imageUrl,
-        emailAddresses: clerkUser.primaryEmailAddressId
-          ? JSON.stringify(clerkUser.primaryEmailAddressId)
-          : { set: null },
       },
     });
   }
