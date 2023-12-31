@@ -1,6 +1,7 @@
 import { Webhook } from "svix";
 import { headers } from "next/headers";
 import { WebhookEvent } from "@clerk/nextjs/server";
+import { clerkClient } from "@clerk/nextjs";
 
 import prismadb from "@/lib/prismadb";
 
@@ -31,6 +32,16 @@ export async function POST(req: Request) {
   // リクエストボディを取得し、JSON形式に変換
   const payload = await req.json();
   const body = JSON.stringify(payload);
+
+  const userId = payload.data.user_id;
+
+  const clerkUser = await clerkClient.users.getUser(userId);
+
+  const firstName = clerkUser.firstName;
+  const lastName = clerkUser.lastName;
+
+  console.log("First Name:", firstName);
+  console.log("Last Name:", lastName);
 
   // Webhookインスタンスを作成
   const wh = new Webhook(WEBHOOK_SECRET);
