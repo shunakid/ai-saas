@@ -69,7 +69,7 @@ export async function POST(req: Request) {
         firstName: clerkUser.firstName,
         lastName: clerkUser.lastName,
         imageUrl: clerkUser.imageUrl,
-        primaryEmailAddress: clerkUser.primaryEmailAddressId
+        emailAddresses: clerkUser.primaryEmailAddressId
           ? JSON.stringify(clerkUser.primaryEmailAddressId)
           : { set: null },
       },
@@ -77,7 +77,7 @@ export async function POST(req: Request) {
         firstName: clerkUser.firstName,
         lastName: clerkUser.lastName,
         imageUrl: clerkUser.imageUrl,
-        primaryEmailAddress: clerkUser.primaryEmailAddressId
+        emailAddresses: clerkUser.primaryEmailAddressId
           ? JSON.stringify(clerkUser.primaryEmailAddressId)
           : { set: null },
       },
