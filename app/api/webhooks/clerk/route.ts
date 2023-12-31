@@ -51,9 +51,10 @@ export async function POST(req: Request) {
     });
   }
 
+  console.log("Webhook event type:", evt.type);
+
   // イベントタイプを取得
-  // const eventType = evt.type;
-  const eventType = "session.created"; // 仮のイベントタイプを設定
+  const eventType = evt.type;
 
   // セッション作成イベントの場合、データベースにユーザー情報を登録
   if (eventType === "session.created") {
