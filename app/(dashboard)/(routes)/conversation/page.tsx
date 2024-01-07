@@ -22,20 +22,12 @@ import { useProModal } from "@/hooks/use-pro-modal";
 
 import { formSchema } from "./constants";
 
-/**
- * 会話ページのメインコンポーネント。
- * ユーザーがプロンプトを入力し、その応答として会話を生成します。
- * @returns {JSX.Element} 会話ページのコンポーネント
- */
 const ConversationPage = () => {
   const router = useRouter();
   const proModal = useProModal();
 
   const [messages, setMessages] = useState<ChatCompletionRequestMessage[]>([]);
 
-  /**
-   * フォームの設定とバリデーション。
-   */
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -45,11 +37,6 @@ const ConversationPage = () => {
 
   const isLoading = form.formState.isSubmitting;
 
-  /**
-   * ユーザーからの入力をメッセージ形式に変換する。
-   * @param {z.infer<typeof formSchema>} values - ユーザーからの入力。
-   * @returns {ChatCompletionRequestMessage} メッセージ形式に変換された入力。
-   */
   const prepareUserMessage = (
     values: z.infer<typeof formSchema>,
   ): ChatCompletionRequestMessage => {
@@ -59,11 +46,6 @@ const ConversationPage = () => {
     };
   };
 
-  /**
-   * APIにリクエストを送信し、応答として会話を取得する。
-   * @param {ChatCompletionRequestMessage} userMessage - ユーザーからのメッセージ。
-   * @returns {Promise} APIからのレスポンス。
-   */
   const sendRequestToAPI = async (
     userMessage: ChatCompletionRequestMessage,
   ) => {
@@ -71,11 +53,6 @@ const ConversationPage = () => {
     return await axios.post("/api/conversation", { messages: newMessages });
   };
 
-  /**
-   * 会話の状態を更新する。
-   * @param {ChatCompletionRequestMessage} userMessage - ユーザーからのメッセージ。
-   * @param {any} responseData - APIからのレスポンスデータ。
-   */
   const updateMessagesState = (
     userMessage: ChatCompletionRequestMessage,
     responseData: any,
@@ -83,18 +60,10 @@ const ConversationPage = () => {
     setMessages((current) => [...current, userMessage, responseData]);
   };
 
-  /**
-   * ページをリフレッシュする。
-   */
   const refreshPage = () => {
     router.refresh();
   };
 
-  /**
-   * フォームの送信時の処理。
-   * ユーザーの入力を元に、生成された会話を取得し、状態に反映する。
-   * @param {z.infer<typeof formSchema>} values - ユーザーからの入力。
-   */
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     const userMessage = prepareUserMessage(values);
     try {

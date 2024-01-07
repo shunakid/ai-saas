@@ -8,7 +8,7 @@ import { openAIConfiguration } from "../utils/openAIConfig";
  */
 const HandleErrorsParamsSchema = z.object({
   userId: z.union([z.string(), z.null()]),
-  userMessages: z.array(z.string()).optional(),
+  conversationHistory: z.array(z.string()).optional(),
   prompt: z.string().optional(),
   requiredFields: z.record(z.union([z.string(), z.number()])).optional(),
   freetrial: z.boolean().optional(),
@@ -19,17 +19,6 @@ const HandleErrorsParamsSchema = z.object({
  */
 type HandleErrorsParams = z.infer<typeof HandleErrorsParamsSchema>;
 
-/**
- * エラーをハンドリングする関数。
- * 1. ユーザーIDが存在しない場合、401のステータスコードで"Unauthorized"というレスポンスを返します。
- * 2. OpenAIのAPIキーが設定されていない場合、500のステータスコードでエラーメッセージを返します。
- * 3. 必須フィールドが存在し、そのフィールドの値が存在しない場合、400のステータスコードでエラーメッセージを返します。
- * 4. freetrialがfalseの場合、403のステータスコードで"API Limit Exceeded"というレスポンスを返します。
- * 上記の条件に一致しない場合、nullを返します。
- *
- * @param {HandleErrorsParams} params - エラーハンドリングのためのパラメータ。
- * @returns {NextResponse | null} - エラーレスポンスまたはnull。
- */
 function handleErrors(params: HandleErrorsParams) {
   const { userId, requiredFields, freetrial } = params;
 

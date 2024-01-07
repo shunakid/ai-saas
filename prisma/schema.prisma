@@ -40,11 +40,14 @@ model User {
   lastName       String?                       // 姓
   imageUrl       String?                       // プロフィール画像のURL
   emailAddresses EmailAddress[]                // EmailAddress モデルへのリレーション
+
+  conversations  Conversation[]               // Conversation モデルへのリレーション
   createdAt      DateTime @default(now())      // 作成日時
   updatedAt      DateTime @updatedAt           // 更新日時
 
   // Userモデルに直接インデックスを設定するため、スカラーフィールドを対象にする。
   @@index([userId])
+
 }
 
 // ユーザーのメールアドレス情報を管理するモデル
@@ -57,5 +60,17 @@ model EmailAddress {
 
   // EmailAddressモデルのuserIdフィールドにインデックスを設定
   // これにより、特定のユーザーに関連するメールアドレスを効率的に検索できる
+  @@index([userId])
+}
+
+// ユーザーとChatGPTとのインタラクションを管理するモデル
+model Conversation {
+  id                  String   @id @default(uuid()) // 一意のID
+  userId              String   @unique                       // ユーザーID
+  conversationHistory Json                          // ユーザーとChatGPTとのインタラクションの履歴
+  createdAt           DateTime @default(now())     // 作成日時
+  updatedAt           DateTime @updatedAt          // 更新日時
+  user                User     @relation(fields: [userId], references: [userId])
+
   @@index([userId])
 }
