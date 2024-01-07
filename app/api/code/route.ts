@@ -31,19 +31,23 @@ export async function POST(req: Request): Promise<NextResponse> {
   try {
     // リクエストからユーザーIDとメッセージを取得
     const { userId, body } = await handleRequest(req);
-    const { messages: userMessages } = body;
+    const { messages: conversationHistory } = body;
 
     // APIの制限回数を確認
     const freetrial = await checkApiLimit();
 
     // エラーハンドリング
-    const errorResponse = handleErrors({ userId, userMessages, freetrial });
+    const errorResponse = handleErrors({
+      userId,
+      conversationHistory,
+      freetrial,
+    });
     if (errorResponse) return errorResponse;
 
     // OpenAIのAPIを呼び出し
     const openAIResponse = await openAIApiInstance.createChatCompletion({
       model: "gpt-3.5-turbo",
-      messages: [instructionMessage, ...userMessages],
+      messages: [instructionMessage, ...conversationHistory],
     });
 
     // APIの制限回数を増やす
