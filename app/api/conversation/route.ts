@@ -31,8 +31,8 @@ export async function POST(req: Request): Promise<NextResponse> {
       messages: conversationHistory,
     });
 
-    // ここで最新の会話履歴を保存する
-    saveConversation(userId, openAIResponse);
+    // 最新の会話履歴を保存
+    saveConversation(userId, openAIResponse, conversationHistory);
 
     // APIの制限回数を増やす
     await incrementApiLimit();
@@ -41,4 +41,8 @@ export async function POST(req: Request): Promise<NextResponse> {
   } catch (error) {
     return new NextResponse("Internal Error", { status: 500 });
   }
+}
+
+export async function GET(req: Request): Promise<NextResponse> {
+  return new NextResponse("success", { status: 200 });
 }

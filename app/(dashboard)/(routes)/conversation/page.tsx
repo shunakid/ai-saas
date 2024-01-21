@@ -4,7 +4,7 @@ import * as z from "zod";
 import axios from "axios";
 import { MessageSquare } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ChatCompletionRequestMessage } from "openai";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -27,6 +27,19 @@ const ConversationPage = () => {
   const proModal = useProModal();
 
   const [messages, setMessages] = useState<ChatCompletionRequestMessage[]>([]);
+
+  useEffect(() => {
+    const fetchMessages = async () => {
+      try {
+        const response = await axios.get("/api/conversation");
+        console.log("console", response);
+      } catch (error) {
+        console.error("メッセージの取得に失敗しました。", error);
+      }
+    };
+
+    fetchMessages();
+  }, []);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
